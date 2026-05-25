@@ -333,7 +333,7 @@
                     </div>
                 </div>
 
-                <form action="https://api.web3forms.com/submit" method="POST" id="orderForm" onsubmit="handleSubmitVisuals()">
+                <form action="https://api.web3forms.com/submit" method="POST" id="orderForm">
                     <input type="hidden" name="access_key" value="d28e0489-1a42-440b-8ce5-ccdfa8527855">
                     <input type="hidden" name="subject" value="Новый заказ с сайта ALEX_LONG">
                     <input type="hidden" name="Заказанный товар" id="hiddenItemName">
@@ -367,9 +367,9 @@
                 <div class="success-icon">✓</div>
                 <h3 style="margin: 0 0 10px 0; color: #39FF14; font-size: 22px; font-weight: 900; text-transform: uppercase;">Оплата прошла успешно!</h3>
                 <p style="color: #ffffff; font-size: 15px; line-height: 1.5; margin: 0;">
-                    Спасибо за заказ. Мы проверим поступление средств и обязательно сообщим, когда ваш заказ доставят!
+                    Оплата прошла успешно, мы сообщим, когда ваш заказ доставят.
                 </p>
-                <button onclick="closeSuccessModal()" class="btn-submit" style="margin-top: 20px; background: #ffffff; color: #000000;">Отлично</button>
+                <button onclick="closeSuccessModal()" class="btn-submit" style="margin-top: 20px; background: #ffffff; color: #000000; font-weight: bold;">Отлично</button>
             </div>
         </div>
     </div>
@@ -400,18 +400,10 @@
         function closeSuccessModal() {
             document.getElementById('successModal').classList.remove('active');
             document.body.style.overflow = '';
-            // Очищаем хэш в строке браузера, чтобы окно не всплывало при обновлении страницы
             window.location.hash = '';
         }
 
-        function handleSubmitVisuals() {
-            const btn = document.getElementById('submitBtn');
-            btn.innerText = "ОТПРАВКА...";
-            btn.style.background = "#22c55e";
-            btn.disabled = true;
-        }
-
-        // Автоматическая проверка: если пользователь вернулся с меткой #success, показываем окно успеха
+        // Проверяем наличие хэша #success при загрузке страницы
         window.addEventListener('DOMContentLoaded', () => {
             if (window.location.hash === '#success') {
                 document.getElementById('successModal').classList.add('active');
