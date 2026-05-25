@@ -1,0 +1,392 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>ALEX_LONG // Официальный мерч A.LABEL</title>
+<style>
+/* БАЗОВЫЕ СТИЛИ САЙТА */
+body {
+background-color: #0A0A0A;
+color: #FFFFFF;
+font-family: Arial, sans-serif;
+margin: 0;
+padding: 0;
+box-sizing: border-box;
+}
+
+header {
+background: #121212;
+border-bottom: 1px solid #27272a;
+position: sticky;
+top: 0;
+z-index: 50;
+padding: 15px 20px;
+}
+
+.header-container {
+max-width: 1200px;
+margin: 0 auto;
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.logo-container {
+display: flex;
+align-items: center;
+}
+
+/* Твой новый логотип в шапке */
+.header-logo-img {
+height: 40px !important;
+width: auto !important;
+display: block;
+object-fit: contain;
+}
+
+/* БАННЕР НА ГЛАВНОЙ */
+.hero {
+text-align: center;
+padding: 50px 20px;
+background: linear-gradient(to bottom, #18181b, #0A0A0A);
+display: flex;
+flex-direction: column;
+align-items: center;
+justify-content: center;
+}
+
+/* Твой новый логотип по центру главной */
+.main-logo-img {
+max-width: 400px !important;
+width: 85% !important;
+height: auto !important;
+display: block;
+object-fit: contain;
+margin-bottom: 15px;
+}
+
+/* КАТАЛОГ */
+.catalog-section {
+max-width: 1200px;
+margin: 0 auto;
+padding: 40px 20px;
+}
+
+.catalog-title {
+font-size: 32px;
+font-weight: 900;
+border-bottom: 4px solid #39FF14;
+display: inline-block;
+margin-bottom: 40px;
+padding-bottom: 5px;
+}
+
+.grid {
+display: grid;
+grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+gap: 24px;
+}
+
+.card {
+background: #121212;
+border: 1px solid #27272a;
+border-radius: 12px;
+padding: 16px;
+display: flex;
+flex-direction: column;
+justify-content: space-between;
+}
+
+.card-img {
+background: #18181b;
+height: 200px;
+border-radius: 8px;
+display: flex;
+align-items: center;
+justify-content: center;
+font-size: 48px;
+margin-bottom: 16px;
+}
+
+.card h3 {
+margin: 0 0 8px 0;
+font-size: 18px;
+}
+
+.card p {
+color: #a1a1aa;
+font-size: 14px;
+margin: 0 0 16px 0;
+line-height: 1.4;
+}
+
+.card-footer {
+display: flex;
+justify-content: space-between;
+align-items: center;
+}
+
+.price {
+color: #39FF14;
+font-size: 20px;
+font-weight: 900;
+}
+
+.btn-buy {
+background: #FFFFFF;
+color: #000000;
+border: none;
+padding: 8px 16px;
+border-radius: 4px;
+font-weight: bold;
+cursor: pointer;
+transition: background 0.2s;
+}
+
+.btn-buy:hover {
+background: #39FF14;
+}
+
+/* МОДАЛЬНОЕ ОКНО (КОРЗИНА И ОПЛАТА) */
+.custom-modal {
+display: none;
+position: fixed;
+top: 0; left: 0; right: 0; bottom: 0;
+background: rgba(0, 0, 0, 0.85);
+z-index: 9999;
+align-items: center;
+justify-content: center;
+padding: 16px;
+overflow-y: auto;
+}
+
+.custom-modal.active {
+display: flex;
+}
+
+.modal-content {
+background: #121212;
+border: 1px solid #27272a;
+width: 100%;
+max-width: 400px;
+border-radius: 16px;
+padding: 24px;
+position: relative;
+box-sizing: border-box;
+margin: auto;
+}
+
+.close-btn {
+position: absolute;
+top: 12px;
+right: 16px;
+background: none;
+border: none;
+color: #a1a1aa;
+font-size: 28px;
+cursor: pointer;
+}
+
+.close-btn:hover {
+color: #FFFFFF;
+}
+
+.qr-box {
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 12px;
+padding: 16px;
+text-align: center;
+margin-bottom: 20px;
+}
+
+.form-group {
+margin-bottom: 12px;
+}
+
+.form-group label {
+display: block;
+font-size: 11px;
+color: #a1a1aa;
+margin-bottom: 4px;
+text-transform: uppercase;
+font-weight: bold;
+}
+
+.form-group input, .form-group textarea {
+width: 100%;
+background: #18181b;
+border: 1px solid #27272a;
+border-radius: 6px;
+padding: 10px;
+color: #FFFFFF;
+font-size: 14px;
+box-sizing: border-box;
+}
+
+.form-group input:focus, .form-group textarea:focus {
+border-color: #39FF14;
+outline: none;
+}
+
+.btn-submit {
+width: 100%;
+background: #39FF14;
+color: #000000;
+border: none;
+padding: 12px;
+border-radius: 6px;
+font-weight: 900;
+text-transform: uppercase;
+cursor: pointer;
+}
+
+.btn-submit:hover {
+background: #2ee610;
+}
+</style>
+</head>
+<body>
+
+<header>
+<div class="header-container">
+<div class="logo-container">
+<img src="1000034338.png" alt="A.LABEL" class="header-logo-img">
+</div>
+<div style="font-size: 12px; color: #a1a1aa; font-weight: bold;">// ALEX_LONG</div>
+</div>
+</header>
+
+<section class="hero">
+<img src="1000034338.png" alt="A.LABEL" class="main-logo-img">
+
+<p style="color: #a1a1aa; max-width: 500px; margin: 10px auto 0 auto; line-height: 1.5;">
+Лимитированная коллекция уличного мерча премиум-качества от бренда A.LABEL.
+</p>
+</section>
+
+<section class="catalog-section" id="catalog">
+<div class="catalog-title">Официальный Мерч</div>
+
+<div class="grid">
+<div class="card">
+<div class="card-img">🧥</div>
+<div>
+<h3>Худи A.LABEL Black</h3>
+<p>Тяжелый премиум-хлопок, объемный вышитый логотип на спине.</p>
+</div>
+<div class="card-footer">
+<div class="price">5400 руб</div>
+<button onclick="openPayment('Худи A.LABEL Black', 5400)" class="btn-buy">Купить</button>
+</div>
+</div>
+
+<div class="card">
+<div class="card-img">👕</div>
+<div>
+<h3>Футболка LONG VIBES</h3>
+<p>Свободный крой, яркий неоновый принт-граффити, устойчивый к стирке.</p>
+</div>
+<div class="card-footer">
+<div class="price">2800 руб</div>
+<button onclick="openPayment('Футболка LONG VIBES', 2800)" class="btn-buy">Купить</button>
+</div>
+</div>
+
+<div class="card">
+<div class="card-img">🧢</div>
+<div>
+<h3>Кепка-тракер A.L.</h3>
+<p>Сетчатая задняя панель, регулируемая застежка, плотный козырек.</p>
+</div>
+<div class="card-footer">
+<div class="price">1900 руб</div>
+<button onclick="openPayment('Кепка-тракер A.L.', 1900)" class="btn-buy">Купить</button>
+</div>
+</div>
+
+<div class="card">
+<div class="card-img">👜</div>
+<div>
+<h3>Холщовый шоппер A.L.</h3>
+<p>Прочная ткань, глубокий черный цвет, выдерживает большие нагрузки.</p>
+</div>
+<div class="card-footer">
+<div class="price">1500 руб</div>
+<button onclick="openPayment('Холщовый шоппер A.L.', 1500)" class="btn-buy">Купить</button>
+</div>
+</div>
+</div>
+</section>
+
+<div id="paymentModal" class="custom-modal">
+<div class="modal-content" onclick="event.stopPropagation()">
+<button onclick="closePayment()" class="close-btn">×</button>
+
+<h3 style="margin: 0 0 4px 0; color: #39FF14; font-size: 20px; font-weight: 900; text-transform: uppercase;">Оформление заказа</h3>
+
+<p id="modalItemName" style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold; color: #ffffff;">Выбранный товар</p>
+
+<div class="qr-box">
+<p style="font-size: 12px; color: #a1a1aa; margin: 0 0 12px 0;">Отсканируйте QR-код в приложении вашего банка для оплаты СБП</p>
+
+<div style="background: #FFFFFF; padding: 12px; display: inline-block; border-radius: 8px; margin-bottom: 12px; width: 180px; height: 180px; box-sizing: border-box;">
+<img src="My-sbp-code.jpg" alt="QR-код" style="width: 156px; height: 156px; display: block; object-fit: contain; margin: 0 auto;">
+</div>
+
+<div style="font-size: 18px; font-weight: 900;">
+Итого к оплате: <span id="modalItemPrice" style="color: #39FF14;">0 руб</span>
+</div>
+</div>
+
+<form onsubmit="handleFormSubmit(event)">
+<div class="form-group">
+<label>Ваше Имя</label>
+<input type="text" required>
+</div>
+<div class="form-group">
+<label>Telegram или Телефон для связи</label>
+<input type="text" required placeholder="@username или +7...">
+</div>
+<div class="form-group">
+<label>Адрес доставки</label>
+<textarea required rows="2" placeholder="Город, улица, дом, кв, индекс"></textarea>
+</div>
+
+<button type="submit" class="btn-submit">Я оплатил, подтвердить заказ</button>
+</form>
+</div>
+</div>
+
+<script>
+function openPayment(name, price) {
+// Записываем товар и цену в окно оплаты
+document.getElementById('modalItemName').innerText = "Товар: " + name;
+document.getElementById('modalItemPrice').innerText = price + " руб";
+
+// Открываем модальное окно
+document.getElementById('paymentModal').classList.add('active');
+document.body.style.overflow = 'hidden';
+}
+
+function closePayment() {
+document.getElementById('paymentModal').classList.remove('active');
+document.body.style.overflow = '';
+}
+
+function handleFormSubmit(event) {
+event.preventDefault();
+alert('Спасибо! Ваш заказ принят. Администратор проверит зачисление и свяжется с вами.');
+closePayment();
+}
+
+window.addEventListener('click', function(e) {
+const modal = document.getElementById('paymentModal');
+if (e.target === modal) {
+closePayment();
+}
+});
+</script>
+</body>
+</html>
