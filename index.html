@@ -235,4 +235,187 @@
     <header>
         <div class="header-container">
             <div class="logo-container">
-                <img src="1000034338.png" alt="
+                <img src="1000034338.png" alt="A.LABEL" class="header-logo-img">
+            </div>
+            <div style="font-size: 12px; color: #18181b; font-weight: bold;">// ALEX_LONG</div>
+        </div>
+    </header>
+
+    <section class="hero">
+        <img src="1000034338.png" alt="A.LABEL" class="main-logo-img">
+        <p style="color: #a1a1aa; max-width: 500px; margin: 10px auto 0 auto; line-height: 1.5;">
+            Лимитированная коллекция уличного мерча премиум-качества от бренда A.LABEL.
+        </p>
+    </section>
+
+    <section class="catalog-section" id="catalog">
+        <div class="catalog-title">Официальный Мерч</div>
+
+        <div class="grid">
+            <div class="card">
+                <div class="card-img">🧥</div>
+                <div>
+                    <h3>Худи A.LABEL Black</h3>
+                    <p>Тяжелый премиум-хлопок, объемный вышитый логотип на спине.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="price">5400 руб</div>
+                    <button onclick="openPayment('Худи A.LABEL Black', '5400 руб')" class="btn-buy">Купить</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img">👕</div>
+                <div>
+                    <h3>Футболка LONG VIBES</h3>
+                    <p>Свободный крой, яркий неоновый принт-граффити, устойчивый к стирке.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="price">2800 руб</div>
+                    <button onclick="openPayment('Футболка LONG VIBES', '2800 руб')" class="btn-buy">Купить</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img">🧢</div>
+                <div>
+                    <h3>Кепка-тракер A.L.</h3>
+                    <p>Сетчатая задняя панель, регулируемая застежка, плотный козырек.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="price">1900 руб</div>
+                    <button onclick="openPayment('Кепка-тракер A.L.', '1900 руб')" class="btn-buy">Купить</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img">👜</div>
+                <div>
+                    <h3>Холщовый шоппер A.L.</h3>
+                    <p>Прочная ткань, глубокий черный цвет, выдерживает большие нагрузки.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="price">1500 руб</div>
+                    <button onclick="openPayment('Холщовый шоппер A.L.', '1500 руб')" class="btn-buy">Купить</button>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <div id="paymentModal" class="custom-modal">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button onclick="closePayment()" class="close-btn">&times;</button>
+            
+            <h3 style="margin: 0 0 4px 0; color: #39FF14; font-size: 20px; font-weight: 900; text-transform: uppercase;">Оформление заказа</h3>
+            <p id="modalItemName" style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold; color: #ffffff;">Выбранный товар</p>
+            
+            <div class="qr-box">
+                <p style="font-size: 12px; color: #a1a1aa; margin: 0 0 12px 0;">Отсканируйте QR-код в приложении вашего банка для оплаты СБП</p>
+                
+                <div style="background: #FFFFFF; padding: 12px; display: inline-block; border-radius: 8px; margin-bottom: 12px; width: 180px; height: 180px; box-sizing: border-box;">
+                    <img src="My-sbp-code.jpg" alt="QR-код" style="width: 156px; height: 156px; display: block; object-fit: contain; margin: 0 auto;">
+                </div>
+                
+                <div style="font-size: 18px; font-weight: 900;">
+                    Итого к оплате: <span id="modalItemPrice" style="color: #39FF14;">0 руб</span>
+                </div>
+            </div>
+
+            <form id="orderForm" onsubmit="handleFormSubmit(event)">
+                
+                <div class="form-group">
+                    <label>Ваше Имя</label>
+                    <input type="text" id="clientName" required>
+                </div>
+                <div class="form-group">
+                    <label>Telegram или Телефон для связи</label>
+                    <input type="text" id="clientContact" required placeholder="@username или +7...">
+                </div>
+                <div class="form-group">
+                    <label>Адрес доставки</label>
+                    <textarea id="clientAddress" required rows="2" placeholder="Город, улица, дом, кв, индекс"></textarea>
+                </div>
+
+                <button type="submit" class="btn-submit" id="submitBtn">Я оплатил, подтвердить заказ</button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        let selectedItemName = "";
+        let selectedItemPrice = "";
+
+        function openPayment(name, price) {
+            selectedItemName = name;
+            selectedItemPrice = price;
+            
+            document.getElementById('modalItemName').innerText = "Товар: " + name;
+            document.getElementById('modalItemPrice').innerText = price;
+            
+            document.getElementById('paymentModal').classList.add('active');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closePayment() {
+            document.getElementById('paymentModal').classList.remove('active');
+            document.body.style.overflow = '';
+        }
+
+        function handleFormSubmit(event) {
+            event.preventDefault(); // Запрещаем перезагрузку страницы и черные экраны
+            
+            const btn = document.getElementById('submitBtn');
+            btn.innerText = "ОТПРАВКА...";
+            btn.disabled = true;
+
+            const name = document.getElementById('clientName').value;
+            const contact = document.getElementById('clientContact').value;
+            const address = document.getElementById('clientAddress').value;
+
+            // Формируем чистый JSON объект для Web3Forms
+            const formData = {
+                access_key: "d28e0489-1a42-440b-8ce5-ccdfa8527855",
+                subject: "Новый заказ с сайта ALEX_LONG",
+                "Заказанный товар": selectedItemName,
+                "Сумма к оплате": selectedItemPrice,
+                "Имя покупателя": name,
+                "Контакты связи": contact,
+                "Адрес доставки": address
+            };
+
+            // Отправляем AJAX запрос напрямую на их API
+            fetch("https://api.web3forms.com/submit", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json",
+                    "Accept": "application/json"
+                },
+                body: JSON.stringify(formData)
+            })
+            .then(async (response) => {
+                if (response.ok) {
+                    alert("Спасибо! Ваш заказ успешно отправлен. Мы проверим оплату и свяжемся с вами.");
+                    document.getElementById('orderForm').reset(); // Очищаем форму
+                    closePayment(); // Закрываем модалку
+                } else {
+                    alert("Произошла ошибка при отправке заказа. Пожалуйста, попробуйте еще раз.");
+                }
+            })
+            .catch(error => {
+                alert("Ошибка сети. Проверьте подключение к интернету.");
+            })
+            .finally(() => {
+                btn.innerText = "Я оплатил, подтвердить заказ";
+                btn.disabled = false;
+            });
+        }
+
+        window.addEventListener('click', function(e) {
+            const modal = document.getElementById('paymentModal');
+            if (e.target === modal) {
+                closePayment();
+            }
+        });
+    </script>
+</body>
+</html>
