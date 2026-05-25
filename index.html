@@ -322,7 +322,6 @@
             </div>
 
             <form id="orderForm" onsubmit="handleFormSubmit(event)">
-                
                 <div class="form-group">
                     <label>Ваше Имя</label>
                     <input type="text" id="clientName" required>
@@ -357,12 +356,13 @@
         }
 
         function closePayment() {
+            document.getElementById('paymentModal').classList.remove('remove');
             document.getElementById('paymentModal').classList.remove('active');
             document.body.style.overflow = '';
         }
 
         function handleFormSubmit(event) {
-            event.preventDefault(); // Запрещаем перезагрузку страницы и черные экраны
+            event.preventDefault();
             
             const btn = document.getElementById('submitBtn');
             btn.innerText = "ОТПРАВКА...";
@@ -372,18 +372,17 @@
             const contact = document.getElementById('clientContact').value;
             const address = document.getElementById('clientAddress').value;
 
-            // Формируем чистый JSON объект для Web3Forms
+            // Сформированный JSON объект с ПОЛНЫМ валидным access_key
             const formData = {
                 access_key: "d28e0489-1a42-440b-8ce5-ccdfa8527855",
                 subject: "Новый заказ с сайта ALEX_LONG",
-                "Заказанный товар": selectedItemName,
-                "Сумма к оплате": selectedItemPrice,
-                "Имя покупателя": name,
-                "Контакты связи": contact,
-                "Адрес доставки": address
+                "Товар": selectedItemName,
+                "Цена": selectedItemPrice,
+                "Покупатель": name,
+                "Контакты": contact,
+                "Адрес": address
             };
 
-            // Отправляем AJAX запрос напрямую на их API
             fetch("https://api.web3forms.com/submit", {
                 method: "POST",
                 headers: {
@@ -395,16 +394,17 @@
             .then(async (response) => {
                 if (response.ok) {
                     alert("Спасибо! Ваш заказ успешно отправлен. Мы проверим оплату и свяжемся с вами.");
-                    document.getElementById('orderForm').reset(); // Очищаем форму
-                    closePayment(); // Закрываем модалку
+                    document.getElementById('orderForm').reset();
+                    closePayment();
                 } else {
-                    alert("Произошла ошибка при отправке заказа. Пожалуйста, попробуйте еще раз.");
+                    alert("Ошибка сервера. Пожалуйста, убедитесь, что форма активирована на Web3Forms.");
+                    btn.innerText = "Я оплатил, подтвердить заказ";
+                    btn.disabled = false;
                 }
             })
             .catch(error => {
-                alert("Ошибка сети. Проверьте подключение к интернету.");
-            })
-            .finally(() => {
+                console.error("Ошибка сети:", error);
+                alert("Ошибка сети. Проверьте интернет-соединение.");
                 btn.innerText = "Я оплатил, подтвердить заказ";
                 btn.disabled = false;
             });
