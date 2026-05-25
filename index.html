@@ -228,6 +228,17 @@
             text-transform: uppercase;
             cursor: pointer;
         }
+
+        /* ОКНО УСПЕШНОЙ ОПЛАТЫ */
+        .success-box {
+            text-align: center;
+            padding: 20px 10px;
+        }
+        .success-icon {
+            font-size: 54px;
+            color: #39FF14;
+            margin-bottom: 15px;
+        }
     </style>
 </head>
 <body>
@@ -306,46 +317,60 @@
         <div class="modal-content" onclick="event.stopPropagation()">
             <button onclick="closePayment()" class="close-btn">&times;</button>
             
-            <h3 style="margin: 0 0 4px 0; color: #39FF14; font-size: 20px; font-weight: 900; text-transform: uppercase;">Оформление заказа</h3>
-            <p id="modalItemName" style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold; color: #ffffff;">Выбранный товар</p>
-            
-            <div class="qr-box">
-                <p style="font-size: 12px; color: #a1a1aa; margin: 0 0 12px 0;">Отсканируйте QR-код в приложении вашего банка для оплаты СБП</p>
+            <div id="formContainer">
+                <h3 style="margin: 0 0 4px 0; color: #39FF14; font-size: 20px; font-weight: 900; text-transform: uppercase;">Оформление заказа</h3>
+                <p id="modalItemName" style="margin: 0 0 16px 0; font-size: 14px; font-weight: bold; color: #ffffff;">Выбранный товар</p>
                 
-                <div style="background: #FFFFFF; padding: 12px; display: inline-block; border-radius: 8px; margin-bottom: 12px; width: 180px; height: 180px; box-sizing: border-box;">
-                    <img src="My-sbp-code.jpg" alt="QR-код" style="width: 156px; height: 156px; display: block; object-fit: contain; margin: 0 auto;">
+                <div class="qr-box">
+                    <p style="font-size: 12px; color: #a1a1aa; margin: 0 0 12px 0;">Отсканируйте QR-код в приложении вашего банка для оплаты СБП</p>
+                    
+                    <div style="background: #FFFFFF; padding: 12px; display: inline-block; border-radius: 8px; margin-bottom: 12px; width: 180px; height: 180px; box-sizing: border-box;">
+                        <img src="My-sbp-code.jpg" alt="QR-код" style="width: 156px; height: 156px; display: block; object-fit: contain; margin: 0 auto;">
+                    </div>
+                    
+                    <div style="font-size: 18px; font-weight: 900;">
+                        Итого к оплате: <span id="modalItemPrice" style="color: #39FF14;">0 руб</span>
+                    </div>
                 </div>
-                
-                <div style="font-size: 18px; font-weight: 900;">
-                    Итого к оплате: <span id="modalItemPrice" style="color: #39FF14;">0 руб</span>
-                </div>
+
+                <form action="https://api.web3forms.com/submit" method="POST" id="orderForm" onsubmit="handleSubmitVisuals()">
+                    <input type="hidden" name="access_key" value="d28e0489-1a42-440b-8ce5-ccdfa8527855">
+                    <input type="hidden" name="subject" value="Новый заказ с сайта ALEX_LONG">
+                    <input type="hidden" name="Заказанный товар" id="hiddenItemName">
+                    <input type="hidden" name="Сумма к оплате" id="hiddenItemPrice">
+                    
+                    <input type="hidden" name="redirect" value="https://alexeinsmirnov-byte.github.io/merch/#success">
+
+                    <div class="form-group">
+                        <label>Ваше Имя</label>
+                        <input type="text" name="Имя покупателя" id="clientName" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Telegram или Телефон для связи</label>
+                        <input type="text" name="Контакты связи" id="clientContact" required placeholder="@username или +7...">
+                    </div>
+                    <div class="form-group">
+                        <label>Адрес доставки</label>
+                        <textarea name="Адрес доставки" id="clientAddress" required rows="2" placeholder="Город, улица, дом, кв, индекс"></textarea>
+                    </div>
+
+                    <button type="submit" class="btn-submit" id="submitBtn">Я оплатил, подтвердить заказ</button>
+                </form>
             </div>
+        </div>
+    </div>
 
-            <form action="https://api.web3forms.com/submit" method="POST" id="orderForm" onsubmit="handleSubmitVisuals()">
-                
-                <input type="hidden" name="access_key" value="d28e0489-1a42-440b-8ce5-ccdfa8527855">
-                <input type="hidden" name="subject" value="Новый заказ с сайта ALEX_LONG">
-                
-                <input type="hidden" name="Заказанный товар" id="hiddenItemName">
-                <input type="hidden" name="Сумма к оплате" id="hiddenItemPrice">
-
-                <input type="hidden" name="redirect" value="https://alexeinsmirnov-byte.github.io/merch/">
-
-                <div class="form-group">
-                    <label>Ваше Имя</label>
-                    <input type="text" name="Имя покупателя" id="clientName" required>
-                </div>
-                <div class="form-group">
-                    <label>Telegram или Телефон для связи</label>
-                    <input type="text" name="Контакты связи" id="clientContact" required placeholder="@username или +7...">
-                </div>
-                <div class="form-group">
-                    <label>Адрес доставки</label>
-                    <textarea name="Адрес доставки" id="clientAddress" required rows="2" placeholder="Город, улица, дом, кв, индекс"></textarea>
-                </div>
-
-                <button type="submit" class="btn-submit" id="submitBtn">Я оплатил, подтвердить заказ</button>
-            </form>
+    <div id="successModal" class="custom-modal">
+        <div class="modal-content" onclick="event.stopPropagation()">
+            <button onclick="closeSuccessModal()" class="close-btn">&times;</button>
+            <div class="success-box">
+                <div class="success-icon">✓</div>
+                <h3 style="margin: 0 0 10px 0; color: #39FF14; font-size: 22px; font-weight: 900; text-transform: uppercase;">Оплата прошла успешно!</h3>
+                <p style="color: #ffffff; font-size: 15px; line-height: 1.5; margin: 0;">
+                    Спасибо за заказ. Мы проверим поступление средств и обязательно сообщим, когда ваш заказ доставят!
+                </p>
+                <button onclick="closeSuccessModal()" class="btn-submit" style="margin-top: 20px; background: #ffffff; color: #000000;">Отлично</button>
+            </div>
         </div>
     </div>
 
@@ -360,7 +385,6 @@
             document.getElementById('modalItemName').innerText = "Товар: " + name;
             document.getElementById('modalItemPrice').innerText = price;
             
-            // Записываем данные в скрытые инпуты формы перед отправкой
             document.getElementById('hiddenItemName').value = name;
             document.getElementById('hiddenItemPrice').value = price;
             
@@ -373,6 +397,13 @@
             document.body.style.overflow = '';
         }
 
+        function closeSuccessModal() {
+            document.getElementById('successModal').classList.remove('active');
+            document.body.style.overflow = '';
+            // Очищаем хэш в строке браузера, чтобы окно не всплывало при обновлении страницы
+            window.location.hash = '';
+        }
+
         function handleSubmitVisuals() {
             const btn = document.getElementById('submitBtn');
             btn.innerText = "ОТПРАВКА...";
@@ -380,11 +411,19 @@
             btn.disabled = true;
         }
 
-        window.addEventListener('click', function(e) {
-            const modal = document.getElementById('paymentModal');
-            if (e.target === modal) {
-                closePayment();
+        // Автоматическая проверка: если пользователь вернулся с меткой #success, показываем окно успеха
+        window.addEventListener('DOMContentLoaded', () => {
+            if (window.location.hash === '#success') {
+                document.getElementById('successModal').classList.add('active');
+                document.body.style.overflow = 'hidden';
             }
+        });
+
+        window.addEventListener('click', function(e) {
+            const pModal = document.getElementById('paymentModal');
+            const sModal = document.getElementById('successModal');
+            if (e.target === pModal) closePayment();
+            if (e.target === sModal) closeSuccessModal();
         });
     </script>
 </body>
