@@ -321,18 +321,27 @@
                 </div>
             </div>
 
-            <form id="orderForm" onsubmit="handleFormSubmit(event)">
+            <form action="https://api.web3forms.com/submit" method="POST" id="orderForm" onsubmit="handleSubmitVisuals()">
+                
+                <input type="hidden" name="access_key" value="d28e0489-1a42-440b-8ce5-ccdfa8527855">
+                <input type="hidden" name="subject" value="Новый заказ с сайта ALEX_LONG">
+                
+                <input type="hidden" name="Заказанный товар" id="hiddenItemName">
+                <input type="hidden" name="Сумма к оплате" id="hiddenItemPrice">
+
+                <input type="hidden" name="redirect" value="https://alexeinsmirnov-byte.github.io/merch/">
+
                 <div class="form-group">
                     <label>Ваше Имя</label>
-                    <input type="text" id="clientName" required>
+                    <input type="text" name="Имя покупателя" id="clientName" required>
                 </div>
                 <div class="form-group">
                     <label>Telegram или Телефон для связи</label>
-                    <input type="text" id="clientContact" required placeholder="@username или +7...">
+                    <input type="text" name="Контакты связи" id="clientContact" required placeholder="@username или +7...">
                 </div>
                 <div class="form-group">
                     <label>Адрес доставки</label>
-                    <textarea id="clientAddress" required rows="2" placeholder="Город, улица, дом, кв, индекс"></textarea>
+                    <textarea name="Адрес доставки" id="clientAddress" required rows="2" placeholder="Город, улица, дом, кв, индекс"></textarea>
                 </div>
 
                 <button type="submit" class="btn-submit" id="submitBtn">Я оплатил, подтвердить заказ</button>
@@ -351,63 +360,24 @@
             document.getElementById('modalItemName').innerText = "Товар: " + name;
             document.getElementById('modalItemPrice').innerText = price;
             
+            // Записываем данные в скрытые инпуты формы перед отправкой
+            document.getElementById('hiddenItemName').value = name;
+            document.getElementById('hiddenItemPrice').value = price;
+            
             document.getElementById('paymentModal').classList.add('active');
             document.body.style.overflow = 'hidden';
         }
 
         function closePayment() {
-            document.getElementById('paymentModal').classList.remove('remove');
             document.getElementById('paymentModal').classList.remove('active');
             document.body.style.overflow = '';
         }
 
-        function handleFormSubmit(event) {
-            event.preventDefault();
-            
+        function handleSubmitVisuals() {
             const btn = document.getElementById('submitBtn');
             btn.innerText = "ОТПРАВКА...";
+            btn.style.background = "#22c55e";
             btn.disabled = true;
-
-            const name = document.getElementById('clientName').value;
-            const contact = document.getElementById('clientContact').value;
-            const address = document.getElementById('clientAddress').value;
-
-            // Сформированный JSON объект с ПОЛНЫМ валидным access_key
-            const formData = {
-                access_key: "d28e0489-1a42-440b-8ce5-ccdfa8527855",
-                subject: "Новый заказ с сайта ALEX_LONG",
-                "Товар": selectedItemName,
-                "Цена": selectedItemPrice,
-                "Покупатель": name,
-                "Контакты": contact,
-                "Адрес": address
-            };
-
-            fetch("https://api.web3forms.com/submit", {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json",
-                    "Accept": "application/json"
-                },
-                body: JSON.stringify(formData)
-            })
-            .then(async (response) => {
-                if (response.ok) {
-                    alert("Спасибо! Ваш заказ успешно отправлен. Мы проверим оплату и свяжемся с вами.");
-                    document.getElementById('orderForm').reset();
-                    closePayment();
-                } else {
-                    alert("Ошибка сервера. Пожалуйста, убедитесь, что форма активирована на Web3Forms.");
-                    btn.innerText = "Я оплатил, подтвердить заказ";
-                    btn.disabled = false;
-                }
-            })
-            .catch(error => {
-                console.error("Ошибка сети:", error);
-                alert("Ошибка сети. Проверьте интернет-соединение.");
-                btn.innerText = "Я оплатил, подтвердить заказ";
-                btn.disabled = false;
-            });
         }
 
         window.addEventListener('click', function(e) {
