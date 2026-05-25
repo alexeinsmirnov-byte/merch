@@ -103,13 +103,20 @@
 
         .card-img {
             background: #18181b;
-            height: 200px;
+            height: 240px;
             border-radius: 8px;
             display: flex;
             align-items: center;
             justify-content: center;
             font-size: 48px;
             margin-bottom: 16px;
+            overflow: hidden;
+        }
+
+        .card-img img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
         }
 
         .card h3 {
@@ -264,7 +271,21 @@
 
         <div class="grid">
             <div class="card">
-                <div class="card-img">🧥</div>
+                <div class="card-img">
+                    <img src="1000034409.jpg" alt="Брелок Spotify ALEX_LONG">
+                </div>
+                <div>
+                    <h3>Брелок Spotify ALEX_LONG — Ромео и Джульетта</h3>
+                    <p>Прочный акриловый брелок (6х3,5 см) со сканируемым кодом трека. Идеальный музыкальный аксессуар! Доступно изготовление НА ЗАКАЗ с вашим любимым треком.</p>
+                </div>
+                <div class="card-footer">
+                    <div class="price">403 руб</div>
+                    <button onclick="openPayment('Брелок Spotify ALEX_LONG - Ромео и Джульетта', '403 руб')" class="btn-buy">Купить</button>
+                </div>
+            </div>
+
+            <div class="card">
+                <div class="card-img" style="font-size: 48px; background: #18181b;">🧥</div>
                 <div>
                     <h3>Худи A.LABEL Black</h3>
                     <p>Тяжелый премиум-хлопок, объемный вышитый логотип на спине.</p>
@@ -276,7 +297,7 @@
             </div>
 
             <div class="card">
-                <div class="card-img">👕</div>
+                <div class="card-img" style="font-size: 48px; background: #18181b;">👕</div>
                 <div>
                     <h3>Футболка LONG VIBES</h3>
                     <p>Свободный крой, яркий неоновый принт-граффити, устойчивый к стирке.</p>
@@ -288,7 +309,7 @@
             </div>
 
             <div class="card">
-                <div class="card-img">🧢</div>
+                <div class="card-img" style="font-size: 48px; background: #18181b;">🧢</div>
                 <div>
                     <h3>Кепка-тракер A.L.</h3>
                     <p>Сетчатая задняя панель, регулируемая застежка, плотный козырек.</p>
@@ -300,7 +321,7 @@
             </div>
 
             <div class="card">
-                <div class="card-img">👜</div>
+                <div class="card-img" style="font-size: 48px; background: #18181b;">👜</div>
                 <div>
                     <h3>Холщовый шоппер A.L.</h3>
                     <p>Прочная ткань, глубокий черный цвет, выдерживает большие нагрузки.</p>
@@ -403,7 +424,6 @@
             window.location.hash = '';
         }
 
-        // Проверяем наличие хэша #success при загрузке страницы
         window.addEventListener('DOMContentLoaded', () => {
             if (window.location.hash === '#success') {
                 document.getElementById('successModal').classList.add('active');
