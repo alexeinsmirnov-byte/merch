@@ -15,7 +15,8 @@
         input:focus { border-color: #39FF14; }
         .btn-action { width: 100%; background: #39FF14; color: #000000; border: none; padding: 12px; border-radius: 6px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
         .btn-action:hover { background: #32e011; }
-        .error-msg { color: #ff3333; font-size: 13px; margin-top: 15px; display: none; }
+        .btn-action:disabled { background: #555555; color: #aaaaaa; cursor: not-allowed; }
+        .error-msg { color: #ff3333; font-size: 13px; margin-top: 15px; padding: 10px; background: rgba(255,51,51,0.1); border: 1px solid #ff3333; border-radius: 6px; display: none; text-align: left; line-height: 1.4; }
         .dashboard { display: none; text-align: left; }
         .dashboard.active { display: block; }
         .login-form.hidden { display: none; }
@@ -46,8 +47,8 @@
                 <label>GitHub Personal Token</label>
                 <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
             </div>
-            <button onclick="initAdmin()" class="btn-action">Подключиться к базе</button>
-            <div id="error" class="error-msg">Ошибка подключения! Проверьте правильность токена и логина.</div>
+            <button onclick="initAdmin()" class="btn-action" id="connectBtn">Подключиться к базе</button>
+            <div id="error" class="error-msg"></div>
         </div>
 
         <div id="dashboard" class="dashboard">
@@ -92,25 +93,65 @@
     <script>
         let currentSha = ""; 
 
-        function initAdmin() {
+        async function initAdmin() {
             const user = document.getElementById('githubUser').value.trim();
             const repo = document.getElementById('githubRepo').value.trim();
             const token = document.getElementById('githubToken').value.trim();
+            const errorDiv = document.getElementById('error');
+            const connectBtn = document.getElementById('connectBtn');
             
+            errorDiv.style.display = 'none';
+            errorDiv.innerText = '';
+
+            // Проверка на пустые поля перед отправкой запроса
             if(!user || !repo || !token) {
-                document.getElementById('error').style.display = 'block';
+                errorDiv.innerText = "Ошибка: Вы не ввели данные! Пожалуйста, заполните логин, имя репозитория и ваш токен доступа.";
+                errorDiv.style.display = 'block';
                 return;
             }
 
-            localStorage.setItem('gh_user', user);
-            localStorage.setItem('gh_repo', repo);
-            localStorage.setItem('gh_token', token);
+            // Блокируем кнопку на время проверки
+            connectBtn.disabled = true;
+            connectBtn.innerText = "Проверка соединения...";
 
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('dashboard').classList.add('active');
-            document.getElementById('mainContainer').classList.add('wide');
-            
-            loadGitHubOrders();
+            // Пробуем выполнить тестовое подключение к файлу на GitHub
+            const url = `https://api.github.com/repos/${user}/${repo}/contents/orders.json`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                
+                if(!response.ok) {
+                    if(response.status === 401 || response.status === 403) {
+                        throw new Error("Неверный токен доступа (GitHub Personal Token). Проверьте, активен ли он.");
+                    } else if(response.status === 404) {
+                        throw new Error(`Не удалось найти репозиторий или файл по пути: ${user}/${repo}/orders.json. Убедитесь, что логин и имя репозитория указаны правильно.`);
+                    } else {
+                        throw new Error(`Ошибка сервера GitHub (Код: ${response.status}).`);
+                    }
+                }
+                
+                // Если проверка прошла успешно, сохраняем данные и перекидываем в админку
+                localStorage.setItem('gh_user', user);
+                localStorage.setItem('gh_repo', repo);
+                localStorage.setItem('gh_token', token);
+
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('dashboard').classList.add('active');
+                document.getElementById('mainContainer').classList.add('wide');
+                
+                // Загружаем данные в таблицу
+                loadGitHubOrders();
+
+            } catch (err) {
+                // Если произошла ошибка, выводим её на экран и разблокируем форму
+                errorDiv.innerText = "В доступе отказано! " + err.message;
+                errorDiv.style.display = 'block';
+            } finally {
+                connectBtn.disabled = false;
+                connectBtn.innerText = "Подключиться к базе";
+            }
         }
 
         async function loadGitHubOrders() {
@@ -133,7 +174,7 @@
                     headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
                 });
                 
-                if(!response.ok) throw new Error("Не удалось загрузить файл");
+                if(!response.ok) throw new Error("Не удалось загрузить данные.");
                 
                 const fileData = await response.json();
                 currentSha = fileData.sha; 
@@ -167,7 +208,7 @@
                 }
 
             } catch (err) {
-                loadingText.innerText = "Ошибка доступа. Проверьте ваш GitHub Token или имя репозитория.";
+                loadingText.innerText = "Ошибка обновления данных таблицы.";
                 console.error(err);
             }
         }
@@ -230,7 +271,7 @@
                     document.getElementById('newOrderAddress').value = "";
                     loadGitHubOrders();
                 } else {
-                    alert("Не удалось сохранить файл на GitHub. Попробуйте обновить страницу.");
+                    alert("Не удалось сохранить файл на GitHub.");
                 }
             } catch(err) {
                 alert("Ошибка сети при отправке на GitHub.");
