@@ -16,7 +16,7 @@
         .btn-action { width: 100%; background: #39FF14; color: #000000; border: none; padding: 12px; border-radius: 6px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
         .btn-action:hover { background: #32e011; }
         .btn-action:disabled { background: #555555; color: #aaaaaa; cursor: not-allowed; }
-        .error-msg { color: #ff3333; font-size: 13px; margin-top: 15px; padding: 10px; background: rgba(255,51,51,0.1); border: 1px solid #ff3333; border-radius: 6px; display: none; text-align: left; line-height: 1.4; }
+        .error-msg { color: #ff3333; font-size: 13px; margin-top: 15px; padding: 12px; background: rgba(255,51,51,0.1); border: 1px solid #ff3333; border-radius: 6px; display: none; text-align: left; line-height: 1.4; font-weight: bold; }
         .dashboard { display: none; text-align: left; }
         .dashboard.active { display: block; }
         .login-form.hidden { display: none; }
@@ -103,18 +103,17 @@
             errorDiv.style.display = 'none';
             errorDiv.innerText = '';
 
-            // Проверка на пустые поля перед отправкой запроса
+            // 1. Проверка на пустые строки формы
             if(!user || !repo || !token) {
-                errorDiv.innerText = "Ошибка: Вы не ввели данные! Пожалуйста, заполните логин, имя репозитория и ваш токен доступа.";
+                errorDiv.innerText = "⚠ Ошибка: Вы заполнили не все поля! Пожалуйста, обязательно введите Логин, Репозиторий и Секретный токен.";
                 errorDiv.style.display = 'block';
                 return;
             }
 
-            // Блокируем кнопку на время проверки
+            // Включаем режим анимации загрузки
             connectBtn.disabled = true;
-            connectBtn.innerText = "Проверка соединения...";
+            connectBtn.innerText = "Проверка данных...";
 
-            // Пробуем выполнить тестовое подключение к файлу на GitHub
             const url = `https://api.github.com/repos/${user}/${repo}/contents/orders.json`;
 
             try {
@@ -122,17 +121,18 @@
                     headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
                 });
                 
+                // 2. Обработка системных ошибок авторизации GitHub
                 if(!response.ok) {
                     if(response.status === 401 || response.status === 403) {
-                        throw new Error("Неверный токен доступа (GitHub Personal Token). Проверьте, активен ли он.");
+                        throw new Error("Неверный GitHub Personal Token! Перепроверьте буквы токена (он должен начинаться на ghp_).");
                     } else if(response.status === 404) {
-                        throw new Error(`Не удалось найти репозиторий или файл по пути: ${user}/${repo}/orders.json. Убедитесь, что логин и имя репозитория указаны правильно.`);
+                        throw new Error(`Не найден файл базы. Проверьте:\n1. Правильно ли написан ваш логин (${user})\n2. Имя репозитория (${repo})\n3. Создан ли внутри файл orders.json`);
                     } else {
-                        throw new Error(`Ошибка сервера GitHub (Код: ${response.status}).`);
+                        throw new Error(`Ошибка сети GitHub (Статус: ${response.status}). Попробуйте позже.`);
                     }
                 }
                 
-                // Если проверка прошла успешно, сохраняем данные и перекидываем в админку
+                // Если проверка успешна — сохраняем и открываем главную админку
                 localStorage.setItem('gh_user', user);
                 localStorage.setItem('gh_repo', repo);
                 localStorage.setItem('gh_token', token);
@@ -141,12 +141,11 @@
                 document.getElementById('dashboard').classList.add('active');
                 document.getElementById('mainContainer').classList.add('wide');
                 
-                // Загружаем данные в таблицу
                 loadGitHubOrders();
 
             } catch (err) {
-                // Если произошла ошибка, выводим её на экран и разблокируем форму
-                errorDiv.innerText = "В доступе отказано! " + err.message;
+                // Выводим текст ошибки на экран
+                errorDiv.innerText = err.message;
                 errorDiv.style.display = 'block';
             } finally {
                 connectBtn.disabled = false;
@@ -174,7 +173,7 @@
                     headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
                 });
                 
-                if(!response.ok) throw new Error("Не удалось загрузить данные.");
+                if(!response.ok) throw new Error("Не удалось прочитать базу.");
                 
                 const fileData = await response.json();
                 currentSha = fileData.sha; 
