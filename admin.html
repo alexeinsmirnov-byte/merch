@@ -36,7 +36,7 @@
             <h2>Вход в GitHub Админку</h2>
             <div class="input-group">
                 <label>Имя пользователя GitHub (Логин)</label>
-                <input type="text" id="githubUser" placeholder="Например: nsmirnov-byte">
+                <input type="text" id="githubUser" placeholder="Например: alexeinsmirnov-byte">
             </div>
             <div class="input-group">
                 <label>Имя репозитория</label>
@@ -83,4 +83,175 @@
                             <th>Адрес</th>
                         </tr>
                     </thead>
-                    <tbody id
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        let currentSha = ""; 
+
+        function initAdmin() {
+            const user = document.getElementById('githubUser').value.trim();
+            const repo = document.getElementById('githubRepo').value.trim();
+            const token = document.getElementById('githubToken').value.trim();
+            
+            if(!user || !repo || !token) {
+                document.getElementById('error').style.display = 'block';
+                return;
+            }
+
+            localStorage.setItem('gh_user', user);
+            localStorage.setItem('gh_repo', repo);
+            localStorage.setItem('gh_token', token);
+
+            document.getElementById('loginForm').classList.add('hidden');
+            document.getElementById('dashboard').classList.add('active');
+            document.getElementById('mainContainer').classList.add('wide');
+            
+            loadGitHubOrders();
+        }
+
+        async function loadGitHubOrders() {
+            const user = localStorage.getItem('gh_user');
+            const repo = localStorage.getItem('gh_repo');
+            const token = localStorage.getItem('gh_token');
+            
+            const loadingText = document.getElementById('loadingText');
+            const table = document.getElementById('ordersTable');
+            const tbody = document.getElementById('tableBody');
+            
+            loadingText.style.display = "block";
+            table.style.display = "none";
+            tbody.innerHTML = "";
+
+            const url = `https://api.github.com/repos/${user}/${repo}/contents/orders.json`;
+
+            try {
+                const response = await fetch(url, {
+                    headers: { 'Authorization': `token ${token}`, 'Accept': 'application/vnd.github.v3+json' }
+                });
+                
+                if(!response.ok) throw new Error("Не удалось загрузить файл");
+                
+                const fileData = await response.json();
+                currentSha = fileData.sha; 
+                
+                const utf8String = decodeURIComponent(atob(fileData.content).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                
+                const orders = JSON.parse(utf8String);
+
+                if (orders.length === 0) {
+                    loadingText.innerText = "Заказов в файле orders.json пока нет.";
+                    return;
+                }
+
+                loadingText.style.display = "none";
+                table.style.display = "table";
+
+                for (let i = orders.length - 1; i >= 0; i--) {
+                    let order = orders[i];
+                    let tr = document.createElement('tr');
+                    tr.innerHTML = `
+                        <td style="color: #a1a1aa; font-size: 12px;">${order.date || '—'}</td>
+                        <td style="font-weight: bold;">${order.item || '—'}</td>
+                        <td style="color: #39FF14; font-weight: bold;">${order.price || '—'}</td>
+                        <td>${order.name || '—'}</td>
+                        <td style="color: #39FF14;">${order.contact || '—'}</td>
+                        <td style="font-size: 13px;">${order.address || '—'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+
+            } catch (err) {
+                loadingText.innerText = "Ошибка доступа. Проверьте ваш GitHub Token или имя репозитория.";
+                console.error(err);
+            }
+        }
+
+        async function addNewOrder() {
+            const item = document.getElementById('newOrderItems').value.trim();
+            const price = document.getElementById('newOrderPrice').value.trim();
+            const name = document.getElementById('newOrderName').value.trim();
+            const contact = document.getElementById('newOrderContact').value.trim();
+            const address = document.getElementById('newOrderAddress').value.trim();
+
+            if(!item || !name) { alert("Заполните хотя бы товар и имя покупателя!"); return; }
+
+            const user = localStorage.getItem('gh_user');
+            const repo = localStorage.getItem('gh_repo');
+            const token = localStorage.getItem('gh_token');
+
+            const url = `https://api.github.com/repos/${user}/${repo}/contents/orders.json`;
+            let orders = [];
+
+            try {
+                const response = await fetch(url, { headers: { 'Authorization': `token ${token}` } });
+                const fileData = await response.json();
+                currentSha = fileData.sha;
+                const utf8String = decodeURIComponent(atob(fileData.content).split('').map(function(c) {
+                    return '%' + ('00' + c.charCodeAt(0).toString(16)).slice(-2);
+                }).join(''));
+                orders = JSON.parse(utf8String);
+            } catch(e) {}
+
+            const newOrder = {
+                date: new Date().toLocaleString('ru-RU'),
+                item: item,
+                price: price,
+                name: name,
+                contact: contact,
+                address: address
+            };
+            orders.push(newOrder);
+
+            const jsonString = JSON.stringify(orders, null, 2);
+            const base64Content = btoa(unescape(encodeURIComponent(jsonString)));
+
+            try {
+                const putResponse = await fetch(url, {
+                    method: 'PUT',
+                    headers: { 'Authorization': `token ${token}`, 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        message: "Добавлен новый заказ через Панель управления",
+                        content: base64Content,
+                        sha: currentSha
+                    })
+                });
+
+                if(putResponse.ok) {
+                    document.getElementById('newOrderItems').value = "";
+                    document.getElementById('newOrderPrice').value = "";
+                    document.getElementById('newOrderName').value = "";
+                    document.getElementById('newOrderContact').value = "";
+                    document.getElementById('newOrderAddress').value = "";
+                    loadGitHubOrders();
+                } else {
+                    alert("Не удалось сохранить файл на GitHub. Попробуйте обновить страницу.");
+                }
+            } catch(err) {
+                alert("Ошибка сети при отправке на GitHub.");
+            }
+        }
+
+        function logout() {
+            localStorage.clear();
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('mainContainer').classList.remove('wide');
+        }
+
+        window.onload = function() {
+            if(localStorage.getItem('gh_token')) {
+                document.getElementById('githubUser').value = localStorage.getItem('gh_user');
+                document.getElementById('githubRepo').value = localStorage.getItem('gh_repo');
+                document.getElementById('githubToken').value = localStorage.getItem('gh_token');
+                initAdmin();
+            }
+        }
+    </script>
+</body>
+</html>
