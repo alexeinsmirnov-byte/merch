@@ -1,266 +1,181 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Панель управления заказами // ALEX_LONG</title>
-<style>
-body {
-background-color: #0A0A0A;
-color: #FFFFFF;
-font-family: Arial, sans-serif;
-margin: 0;
-padding: 20px;
-display: flex;
-justify-content: center;
-align-items: center;
-min-height: 100vh;
-box-sizing: border-box;
-}
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Панель управления // A.LABEL</title>
+    <style>
+        body {
+            background-color: #0A0A0A;
+            color: #FFFFFF;
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            box-sizing: border-box;
+        }
 
-/* ОКНО АВТОРИЗАЦИИ */
-.login-card {
-background: #121212;
-border: 1px solid #27272a;
-padding: 30px;
-border-radius: 16px;
-width: 100%;
-max-width: 360px;
-text-align: center;
-}
+        .admin-box {
+            background: #121212;
+            border: 1px solid #27272a;
+            border-radius: 16px;
+            padding: 30px;
+            width: 100%;
+            max-width: 400px;
+            text-align: center;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+        }
 
-.login-card h2 {
-color: #39FF14;
-margin-top: 0;
-font-size: 24px;
-text-transform: uppercase;
-font-weight: 900;
-}
+        h2 {
+            color: #39FF14;
+            margin-top: 0;
+            margin-bottom: 20px;
+            text-transform: uppercase;
+            font-weight: 900;
+            font-size: 22px;
+            letter-spacing: 1px;
+        }
 
-.form-group {
-text-align: left;
-margin-bottom: 15px;
-}
+        .input-group {
+            margin-bottom: 15px;
+            text-align: left;
+        }
 
-.form-group label {
-display: block;
-font-size: 12px;
-color: #a1a1aa;
-margin-bottom: 6px;
-text-transform: uppercase;
-font-weight: bold;
-}
+        label {
+            display: block;
+            font-size: 11px;
+            color: #a1a1aa;
+            margin-bottom: 6px;
+            text-transform: uppercase;
+            font-weight: bold;
+        }
 
-.form-group input {
-width: 100%;
-background: #18181b;
-border: 1px solid #27272a;
-border-radius: 6px;
-padding: 12px;
-color: #FFFFFF;
-font-size: 14px;
-box-sizing: border-box;
-}
+        input {
+            width: 100%;
+            background: #18181b;
+            border: 1px solid #27272a;
+            border-radius: 6px;
+            padding: 12px;
+            color: #FFFFFF;
+            font-size: 14px;
+            box-sizing: border-box;
+            outline: none;
+        }
 
-.form-group input:focus {
-border-color: #39FF14;
-outline: none;
-}
+        input:focus {
+            border-color: #39FF14;
+        }
 
-.btn-login {
-width: 100%;
-background: #39FF14;
-color: #000000;
-border: none;
-padding: 12px;
-border-radius: 6px;
-font-weight: 900;
-text-transform: uppercase;
-cursor: pointer;
-margin-top: 10px;
-}
+        .btn-login {
+            width: 100%;
+            background: #39FF14;
+            color: #000000;
+            border: none;
+            padding: 12px;
+            border-radius: 6px;
+            font-weight: 900;
+            text-transform: uppercase;
+            cursor: pointer;
+            margin-top: 10px;
+            transition: background 0.2s;
+        }
 
-.error-msg {
-color: #ff3b30;
-font-size: 14px;
-margin-top: 10px;
-display: none;
-}
+        .btn-login:hover {
+            background: #32e011;
+        }
 
-/* ПАНЕЛЬ С ЗАКАЗАМИ */
-.admin-panel {
-display: none;
-width: 100%;
-max-width: 1000px;
-background: #121212;
-border: 1px solid #27272a;
-border-radius: 16px;
-padding: 30px;
-box-sizing: border-box;
-}
+        .error-msg {
+            color: #ff3333;
+            font-size: 13px;
+            margin-top: 15px;
+            display: none;
+        }
 
-.admin-header {
-display: flex;
-justify-content: space-between;
-align-items: center;
-border-bottom: 2px solid #27272a;
-padding-bottom: 15px;
-margin-bottom: 20px;
-}
+        /* Панель после успешного входа */
+        .dashboard {
+            display: none;
+        }
 
-.admin-header h1 {
-margin: 0;
-font-size: 28px;
-font-weight: 900;
-}
+        .dashboard.active {
+            display: block;
+        }
 
-.admin-header h1 span {
-color: #39FF14;
-}
-
-.btn-logout {
-background: #18181b;
-color: #a1a1aa;
-border: 1px solid #27272a;
-padding: 8px 16px;
-border-radius: 6px;
-cursor: pointer;
-font-weight: bold;
-}
-
-.btn-logout:hover {
-color: #ffffff;
-border-color: #ffffff;
-}
-
-/* ТАБЛИЦА ЗАКАЗОВ */
-.orders-table {
-width: 100%;
-border-collapse: collapse;
-text-align: left;
-}
-
-.orders-table th {
-background: #18181b;
-color: #a1a1aa;
-padding: 12px;
-font-size: 12px;
-text-transform: uppercase;
-border-bottom: 2px solid #27272a;
-}
-
-.orders-table td {
-padding: 16px 12px;
-border-bottom: 1px solid #27272a;
-font-size: 14px;
-}
-
-.orders-table tr:hover {
-background: #161619;
-}
-
-.status-badge {
-background: rgba(57, 255, 20, 0.1);
-color: #39FF14;
-padding: 4px 8px;
-border-radius: 4px;
-font-size: 12px;
-font-weight: bold;
-}
-</style>
+        .login-form.hidden {
+            display: none;
+        }
+    </style>
 </head>
 <body>
 
-<div class="login-card" id="loginCard">
-<h2>Вход в панель</h2>
-<p style="color: #a1a1aa; font-size: 14px; margin-bottom: 20px;">Доступ только для ALEX_LONG</p>
+    <div class="admin-box">
+        <div id="loginForm" class="login-form">
+            <h2>Вход в Админку</h2>
+            <div class="input-group">
+                <label>Логин (Имя пользователя)</label>
+                <input type="text" id="username" placeholder="Введите логин">
+            </div>
+            <div class="input-group">
+                <label>Пароль</label>
+                <input type="password" id="password" placeholder="Введите пароль">
+            </div>
+            <button onclick="checkLogin()" class="btn-login">Войти</button>
+            <div id="error" class="error-msg">Неверный логин или пароль!</div>
+        </div>
 
-<form onsubmit="handleLogin(event)">
-<div class="form-group">
-<label>Логин</label>
-<input type="text" id="username" required autocomplete="off">
-</div>
-<div class="form-group">
-<label>Пароль</label>
-<input type="password" id="password" required>
-</div>
-<button type="submit" class="btn-login">Войти</button>
-<div class="error-msg" id="errorMsg">Неверный логин или пароль!</div>
-</form>
-</div>
+        <div id="dashboard" class="dashboard">
+            <h2>Панель управления</h2>
+            <p style="color: #a1a1aa; font-size: 14px; margin-bottom: 25px;">Вы успешно авторизовались в системе.</p>
+            
+            <div style="background: #18181b; border: 1px solid #27272a; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
+                <p style="margin: 0 0 5px 0; font-weight: bold; color: #39FF14;">Управление заказами</p>
+                <p style="margin: 0; size: 12px; color: #a1a1aa;">Все новые заказы приходят напрямую на вашу почту через Web3Forms.</p>
+            </div>
 
-<div class="admin-panel" id="adminPanel">
-<div class="admin-header">
-<h1>Панель <span>Заказов</span></h1>
-<button class="btn-logout" onclick="handleLogout()">Выйти</button>
-</div>
+            <button onclick="logout()" class="btn-login" style="background: #ffffff; color: #000000;">Выйти</button>
+        </div>
+    </div>
 
-<div style="overflow-x: auto;">
-<table class="orders-table">
-<thead>
-<tr>
-<th>ID</th>
-<th>Имя клиента</th>
-<th>Контакты</th>
-<th>Что заказал</th>
-<th>Адрес доставки</th>
-<th>Статус</th>
-</tr>
-</thead>
-<tbody id="ordersContainer">
-<tr>
-<td>#1004</td>
-<td style="font-weight: bold;">Иван Иванов</td>
-<td style="color: #39FF14;">@ivan_tg</td>
-<td>Худи A.LABEL Black (5400 руб)</td>
-<td>г. Москва, ул. Ленина, д. 10, кв. 5, 101000</td>
-<td><span class="status-badge">Оплачен</span></td>
-</tr>
-<tr>
-<td>#1003</td>
-<td style="font-weight: bold;">Артем К.</td>
-<td>+7 (999) 123-45-67</td>
-<td>Футболка LONG VIBES (2800 руб)</td>
-<td>г. Санкт-Петербург, Невский пр., д. 25, кв. 12</td>
-<td><span class="status-badge">Оплачен</span></td>
-</tr>
-</tbody>
-</table>
-</div>
-</div>
+    <script>
+        // Функция для шифрования текста в SHA-256
+        async function sha256(message) {
+            const msgBuffer = new TextEncoder().encode(message);
+            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
+            const hashArray = Array.from(new Uint8Array(hashBuffer));
+            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        }
 
-<script>
-// Функция проверки авторизации
-function handleLogin(event) {
-event.preventDefault();
+        async function checkLogin() {
+            const userInput = document.getElementById('username').value;
+            const passInput = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error');
 
-const userInp = document.getElementById('username').value;
-const passInp = document.getElementById('password').value;
-const errorBlock = document.getElementById('errorMsg');
+            // Хэш от твоего пароля "ALEX2024"
+            const correctPasswordHash = "c7cc72f0fb8905e3ec5515b80a138db53be9a29e478546f04b2a8d363d6b0485";
+            
+            // Зашифруем то, что ввел пользователь
+            const inputPasswordHash = await sha256(passInput);
 
-// Проверка твоих данных
-if (userInp === "ALEX" && passInp === "12345") {
-// Прячем окно входа, показываем таблицу
-document.getElementById('loginCard').style.display = 'none';
-document.getElementById('adminPanel').style.display = 'block';
-// Меняем фон на свободную раскладку
-document.body.style.alignItems = 'flex-start';
-} else {
-// Показываем ошибку
-errorBlock.style.display = 'block';
-}
-}
+            // Твой логин: admin (можно ввести любыми буквами)
+            if (userInput.toLowerCase() === "admin" && inputPasswordHash === correctPasswordHash) {
+                // Если всё верно — скрываем вход, показываем админку
+                document.getElementById('loginForm').classList.add('hidden');
+                document.getElementById('dashboard').classList.add('active');
+                errorDiv.style.display = 'none';
+            } else {
+                // Если ошибка
+                errorDiv.style.display = 'block';
+            }
+        }
 
-// Выход из панели
-function handleLogout() {
-document.getElementById('username').value = '';
-document.getElementById('password').value = '';
-document.getElementById('errorMsg').style.display = 'none';
-
-document.getElementById('loginCard').style.display = 'block';
-document.getElementById('adminPanel').style.display = 'none';
-document.body.style.alignItems = 'center';
-}
-</script>
+        function logout() {
+            document.getElementById('loginForm').classList.remove('hidden');
+            document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('username').value = '';
+            document.getElementById('password').value = '';
+        }
+    </script>
 </body>
 </html>
