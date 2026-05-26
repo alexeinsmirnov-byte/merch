@@ -53,6 +53,13 @@
             font-weight: bold;
         }
 
+        /* КОНТЕЙНЕР ДЛЯ ПОЛЯ ПАРОЛЯ И ГЛАЗИКА */
+        .password-wrapper {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
         input {
             width: 100%;
             background: #18181b;
@@ -65,8 +72,33 @@
             outline: none;
         }
 
+        /* Дополнительный отступ справа в поле пароля, чтобы текст не залезал под глазик */
+        #password {
+            padding-right: 45px;
+        }
+
         input:focus {
             border-color: #39FF14;
+        }
+
+        /* СТИЛЬ КНОПКИ-ГЛАЗИКА */
+        .eye-btn {
+            position: absolute;
+            right: 12px;
+            background: none;
+            border: none;
+            color: #a1a1aa;
+            cursor: pointer;
+            font-size: 18px;
+            padding: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            user-select: none;
+        }
+
+        .eye-btn:hover {
+            color: #39FF14;
         }
 
         .btn-login {
@@ -118,7 +150,10 @@
             </div>
             <div class="input-group">
                 <label>Пароль</label>
-                <input type="password" id="password" placeholder="Введите пароль">
+                <div class="password-wrapper">
+                    <input type="password" id="password" placeholder="Введите пароль">
+                    <button type="button" onclick="togglePasswordVisibility()" class="eye-btn" id="eyeIcon">👁️</button>
+                </div>
             </div>
             <button onclick="checkLogin()" class="btn-login">Войти</button>
             <div id="error" class="error-msg">Неверный логин или пароль!</div>
@@ -138,27 +173,33 @@
     </div>
 
     <script>
-        async function sha256(message) {
-            const msgBuffer = new TextEncoder().encode(message);
-            const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
-            const hashArray = Array.from(new Uint8Array(hashBuffer));
-            return hashArray.map(b => b.toString(16).padStart(2, '0')).join('');
+        // ФУНКЦИЯ ДЛЯ ПЕРЕКЛЮЧЕНИЯ ВИДИМОСТИ ПАРОЛЯ
+        function togglePasswordVisibility() {
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            
+            if (passwordInput.type === 'password') {
+                passwordInput.type = 'text';
+                eyeIcon.innerText = '🙈'; // Меняем иконку, когда пароль виден
+            } else {
+                passwordInput.type = 'password';
+                eyeIcon.innerText = '👁️'; // Возвращаем обычный глазик
+            }
         }
 
-        async function checkLogin() {
-            const userInput = document.getElementById('username').value.trim();
-            const passInput = document.getElementById('password').value.trim();
+        function checkLogin() {
+            const userInput = document.getElementById('username').value.trim().toLowerCase();
+            const passInput = document.getElementById('password').value.trim().toUpperCase();
             const errorDiv = document.getElementById('error');
 
-            // Хэш от оригинального "ALEX2024"
-            const correctPasswordHash = "c7cc72f0fb8905e3ec5515b80a138db53be9a29e478546f04b2a8d363d6b0485";
-            
-            // Принудительно переводим ввод в БОЛЬШИЕ буквы, чтобы избежать ошибок регистра
-            const upperCasePass = passInput.toUpperCase();
-            const inputPasswordHash = await sha256(upperCasePass);
+            // Зашифрованные в Base64 логин "admin" и пароль "ALEX2024"
+            const targetUserEnc = "YWRtaW4=";
+            const targetPassEnc = "QUxFWDIwMjQ=";
 
-            // Логин admin (регистр не важен)
-            if (userInput.toLowerCase() === "admin" && inputPasswordHash === correctPasswordHash) {
+            const encodedUser = btoa(userInput);
+            const encodedPass = btoa(passInput);
+
+            if (encodedUser === targetUserEnc && encodedPass === targetPassEnc) {
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('active');
                 errorDiv.style.display = 'none';
@@ -172,6 +213,12 @@
             document.getElementById('dashboard').classList.remove('active');
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
+            
+            // Сбрасываем поле пароля в скрытый режим при выходе
+            const passwordInput = document.getElementById('password');
+            const eyeIcon = document.getElementById('eyeIcon');
+            passwordInput.type = 'password';
+            eyeIcon.innerText = '👁️';
         }
     </script>
 </body>
