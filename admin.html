@@ -94,7 +94,6 @@
             display: none;
         }
 
-        /* Панель после успешного входа */
         .dashboard {
             display: none;
         }
@@ -131,7 +130,7 @@
             
             <div style="background: #18181b; border: 1px solid #27272a; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
                 <p style="margin: 0 0 5px 0; font-weight: bold; color: #39FF14;">Управление заказами</p>
-                <p style="margin: 0; size: 12px; color: #a1a1aa;">Все новые заказы приходят напрямую на вашу почту через Web3Forms.</p>
+                <p style="margin: 0; font-size: 12px; color: #a1a1aa;">Все новые заказы приходят напрямую на вашу почту через Web3Forms.</p>
             </div>
 
             <button onclick="logout()" class="btn-login" style="background: #ffffff; color: #000000;">Выйти</button>
@@ -139,7 +138,6 @@
     </div>
 
     <script>
-        // Функция для шифрования текста в SHA-256
         async function sha256(message) {
             const msgBuffer = new TextEncoder().encode(message);
             const hashBuffer = await crypto.subtle.digest('SHA-256', msgBuffer);
@@ -148,24 +146,23 @@
         }
 
         async function checkLogin() {
-            const userInput = document.getElementById('username').value;
-            const passInput = document.getElementById('password').value;
+            const userInput = document.getElementById('username').value.trim();
+            const passInput = document.getElementById('password').value.trim();
             const errorDiv = document.getElementById('error');
 
-            // Хэш от твоего пароля "ALEX2024"
+            // Хэш от оригинального "ALEX2024"
             const correctPasswordHash = "c7cc72f0fb8905e3ec5515b80a138db53be9a29e478546f04b2a8d363d6b0485";
             
-            // Зашифруем то, что ввел пользователь
-            const inputPasswordHash = await sha256(passInput);
+            // Принудительно переводим ввод в БОЛЬШИЕ буквы, чтобы избежать ошибок регистра
+            const upperCasePass = passInput.toUpperCase();
+            const inputPasswordHash = await sha256(upperCasePass);
 
-            // Твой логин: admin (можно ввести любыми буквами)
+            // Логин admin (регистр не важен)
             if (userInput.toLowerCase() === "admin" && inputPasswordHash === correctPasswordHash) {
-                // Если всё верно — скрываем вход, показываем админку
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('active');
                 errorDiv.style.display = 'none';
             } else {
-                // Если ошибка
                 errorDiv.style.display = 'block';
             }
         }
