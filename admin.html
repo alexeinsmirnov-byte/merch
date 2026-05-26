@@ -5,147 +5,41 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Панель управления // A.LABEL</title>
     <style>
-        body {
-            background-color: #0A0A0A;
-            color: #FFFFFF;
-            font-family: Arial, sans-serif;
-            margin: 0;
-            padding: 20px;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            box-sizing: border-box;
-        }
-
-        .admin-box {
-            background: #121212;
-            border: 1px solid #27272a;
-            border-radius: 16px;
-            padding: 30px;
-            width: 100%;
-            max-width: 400px;
-            text-align: center;
-            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
-        }
-
-        h2 {
-            color: #39FF14;
-            margin-top: 0;
-            margin-bottom: 20px;
-            text-transform: uppercase;
-            font-weight: 900;
-            font-size: 22px;
-            letter-spacing: 1px;
-        }
-
-        .input-group {
-            margin-bottom: 15px;
-            text-align: left;
-        }
-
-        label {
-            display: block;
-            font-size: 11px;
-            color: #a1a1aa;
-            margin-bottom: 6px;
-            text-transform: uppercase;
-            font-weight: bold;
-        }
-
-        /* КОНТЕЙНЕР ДЛЯ ПОЛЯ ПАРОЛЯ И ГЛАЗИКА */
-        .password-wrapper {
-            position: relative;
-            display: flex;
-            align-items: center;
-        }
-
-        input {
-            width: 100%;
-            background: #18181b;
-            border: 1px solid #27272a;
-            border-radius: 6px;
-            padding: 12px;
-            color: #FFFFFF;
-            font-size: 14px;
-            box-sizing: border-box;
-            outline: none;
-        }
-
-        /* Дополнительный отступ справа в поле пароля, чтобы текст не залезал под глазик */
-        #password {
-            padding-right: 45px;
-        }
-
-        input:focus {
-            border-color: #39FF14;
-        }
-
-        /* СТИЛЬ КНОПКИ-ГЛАЗИКА */
-        .eye-btn {
-            position: absolute;
-            right: 12px;
-            background: none;
-            border: none;
-            color: #a1a1aa;
-            cursor: pointer;
-            font-size: 18px;
-            padding: 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            user-select: none;
-        }
-
-        .eye-btn:hover {
-            color: #39FF14;
-        }
-
-        .btn-login {
-            width: 100%;
-            background: #39FF14;
-            color: #000000;
-            border: none;
-            padding: 12px;
-            border-radius: 6px;
-            font-weight: 900;
-            text-transform: uppercase;
-            cursor: pointer;
-            margin-top: 10px;
-            transition: background 0.2s;
-        }
-
-        .btn-login:hover {
-            background: #32e011;
-        }
-
-        .error-msg {
-            color: #ff3333;
-            font-size: 13px;
-            margin-top: 15px;
-            display: none;
-        }
-
-        .dashboard {
-            display: none;
-        }
-
-        .dashboard.active {
-            display: block;
-        }
-
-        .login-form.hidden {
-            display: none;
-        }
+        body { background-color: #0A0A0A; color: #FFFFFF; font-family: Arial, sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
+        .admin-box { background: #121212; border: 1px solid #27272a; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: max-width 0.3s; }
+        .admin-box.wide { max-width: 1000px; width: 100%; }
+        h2 { color: #39FF14; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; font-weight: 900; font-size: 22px; }
+        .input-group { margin-bottom: 15px; text-align: left; }
+        label { display: block; font-size: 11px; color: #a1a1aa; margin-bottom: 6px; text-transform: uppercase; font-weight: bold; }
+        .password-wrapper { position: relative; display: flex; align-items: center; }
+        input { width: 100%; background: #18181b; border: 1px solid #27272a; border-radius: 6px; padding: 12px; color: #FFFFFF; font-size: 14px; box-sizing: border-box; outline: none; }
+        #password { padding-right: 45px; }
+        input:focus { border-color: #39FF14; }
+        .eye-btn { position: absolute; right: 12px; background: none; border: none; color: #a1a1aa; cursor: pointer; font-size: 18px; padding: 0; display: flex; align-items: center; user-select: none; }
+        .eye-btn:hover { color: #39FF14; }
+        .btn-login { width: 100%; background: #39FF14; color: #000000; border: none; padding: 12px; border-radius: 6px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .btn-login:hover { background: #32e011; }
+        .error-msg { color: #ff3333; font-size: 13px; margin-top: 15px; display: none; }
+        .dashboard { display: none; text-align: left; }
+        .dashboard.active { display: block; }
+        .login-form.hidden { display: none; }
+        
+        /* СТИЛИ ДЛЯ ТАБЛИЦЫ ЗАКАЗОВ */
+        .table-container { width: 100%; overflow-x: auto; margin-top: 20px; border-radius: 8px; border: 1px solid #27272a; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; background: #18181b; min-width: 600px; }
+        th, td { padding: 12px 15px; border-bottom: 1px solid #27272a; }
+        th { background: #27272a; color: #39FF14; text-transform: uppercase; font-size: 11px; font-weight: bold; }
+        tr:hover { background: #202024; }
+        .loading { color: #a1a1aa; font-style: italic; text-align: center; padding: 20px 0; }
     </style>
 </head>
 <body>
 
-    <div class="admin-box">
+    <div class="admin-box" id="mainContainer">
         <div id="loginForm" class="login-form">
             <h2>Вход в Админку</h2>
             <div class="input-group">
-                <label>Логин (Имя пользователя)</label>
+                <label>Логин</label>
                 <input type="text" id="username" placeholder="Введите логин">
             </div>
             <div class="input-group">
@@ -160,30 +54,42 @@
         </div>
 
         <div id="dashboard" class="dashboard">
-            <h2>Панель управления</h2>
-            <p style="color: #a1a1aa; font-size: 14px; margin-bottom: 25px;">Вы успешно авторизовались в системе.</p>
-            
-            <div style="background: #18181b; border: 1px solid #27272a; padding: 15px; border-radius: 8px; text-align: left; margin-bottom: 20px;">
-                <p style="margin: 0 0 5px 0; font-weight: bold; color: #39FF14;">Управление заказами</p>
-                <p style="margin: 0; font-size: 12px; color: #a1a1aa;">Все новые заказы приходят напрямую на вашу почту через Web3Forms.</p>
+            <h2>Панель управления заказами</h2>
+            <div style="margin-bottom: 15px;">
+                <button onclick="loadOrders()" class="btn-login" style="width: auto; padding: 8px 15px; margin-right: 10px; display: inline-block; font-size: 12px; margin-top: 0;">Обновить список</button>
+                <button onclick="logout()" class="btn-login" style="width: auto; padding: 8px 15px; background: #ffffff; color: #000000; display: inline-block; font-size: 12px; margin-top: 0;">Выйти</button>
             </div>
-
-            <button onclick="logout()" class="btn-login" style="background: #ffffff; color: #000000;">Выйти</button>
+            
+            <div class="table-container">
+                <div id="loadingText" class="loading">Загрузка данных из Google Таблицы...</div>
+                <table id="ordersTable" style="display: none;">
+                    <thead>
+                        <tr>
+                            <th>Дата</th>
+                            <th>Товар</th>
+                            <th>Цена</th>
+                            <th>Имя</th>
+                            <th>Контакты</th>
+                            <th>Адрес</th>
+                        </tr>
+                    </thead>
+                    <tbody id="tableBody"></tbody>
+                </table>
+            </div>
         </div>
     </div>
 
     <script>
-        // ФУНКЦИЯ ДЛЯ ПЕРЕКЛЮЧЕНИЯ ВИДИМОСТИ ПАРОЛЯ
+        // Твоя ссылка на Google Скрипт уже встроена сюда
+        const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw2zeVPD47fP0q2OW4FwvtQzbBWWB-pEj7JEjb34lXrKGwBBIKdYiCn7mum9cqrKz3MZA/exec";
+
         function togglePasswordVisibility() {
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
-            
             if (passwordInput.type === 'password') {
-                passwordInput.type = 'text';
-                eyeIcon.innerText = '🙈'; // Меняем иконку, когда пароль виден
+                passwordInput.type = 'text'; eyeIcon.innerText = '🙈';
             } else {
-                passwordInput.type = 'password';
-                eyeIcon.innerText = '👁️'; // Возвращаем обычный глазик
+                passwordInput.type = 'password'; eyeIcon.innerText = '👁️';
             }
         }
 
@@ -192,29 +98,66 @@
             const passInput = document.getElementById('password').value.trim().toUpperCase();
             const errorDiv = document.getElementById('error');
 
-            // Зашифрованные в Base64 логин "admin" и пароль "ALEX2024"
-            const targetUserEnc = "YWRtaW4=";
-            const targetPassEnc = "QUxFWDIwMjQ=";
-
-            const encodedUser = btoa(userInput);
-            const encodedPass = btoa(passInput);
-
-            if (encodedUser === targetUserEnc && encodedPass === targetPassEnc) {
+            if (btoa(userInput) === "YWRtaW4=" && btoa(passInput) === "QUxFWDIwMjQ=") {
                 document.getElementById('loginForm').classList.add('hidden');
                 document.getElementById('dashboard').classList.add('active');
+                document.getElementById('mainContainer').classList.add('wide');
                 errorDiv.style.display = 'none';
+                loadOrders(); 
             } else {
                 errorDiv.style.display = 'block';
+            }
+        }
+
+        async function loadOrders() {
+            const loadingText = document.getElementById('loadingText');
+            const table = document.getElementById('ordersTable');
+            const tbody = document.getElementById('tableBody');
+            
+            loadingText.style.display = "block";
+            loadingText.innerText = "Загрузка данных из Google Таблицы...";
+            table.style.display = "none";
+            tbody.innerHTML = "";
+
+            try {
+                const response = await fetch(googleScriptUrl);
+                const data = await response.json();
+                
+                if (data.length <= 1) {
+                    loadingText.innerText = "Заказов пока нет.";
+                    return;
+                }
+
+                loadingText.style.display = "none";
+                table.style.display = "table";
+
+                for (let i = data.length - 1; i >= 1; i--) {
+                    let row = data[i];
+                    let tr = document.createElement('tr');
+                    let orderDate = row[0] ? new Date(row[0]).toLocaleString('ru-RU') : '—';
+
+                    tr.innerHTML = `
+                        <td style="color: #a1a1aa; font-size: 12px;">${orderDate}</td>
+                        <td style="font-weight: bold;">${row[1] || '—'}</td>
+                        <td style="color: #39FF14; font-weight: bold;">${row[2] || '—'}</td>
+                        <td>${row[3] || '—'}</td>
+                        <td style="color: #39FF14;">${row[4] || '—'}</td>
+                        <td style="font-size: 13px;">${row[5] || '—'}</td>
+                    `;
+                    tbody.appendChild(tr);
+                }
+            } catch (err) {
+                loadingText.innerText = "Ошибка загрузки данных. Проверьте настройки развертывания скрипта.";
+                console.error(err);
             }
         }
 
         function logout() {
             document.getElementById('loginForm').classList.remove('hidden');
             document.getElementById('dashboard').classList.remove('active');
+            document.getElementById('mainContainer').classList.remove('wide');
             document.getElementById('username').value = '';
             document.getElementById('password').value = '';
-            
-            // Сбрасываем поле пароля в скрытый режим при выходе
             const passwordInput = document.getElementById('password');
             const eyeIcon = document.getElementById('eyeIcon');
             passwordInput.type = 'password';
