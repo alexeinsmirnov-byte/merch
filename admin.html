@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Панель управления // A.LABEL</title>
+    <title>Панель управления GitHub // A.LABEL</title>
     <style>
         body { background-color: #0A0A0A; color: #FFFFFF; font-family: Arial, sans-serif; margin: 0; padding: 20px; display: flex; justify-content: center; align-items: center; min-height: 100vh; box-sizing: border-box; }
         .admin-box { background: #121212; border: 1px solid #27272a; border-radius: 16px; padding: 30px; width: 100%; max-width: 400px; text-align: center; box-shadow: 0 4px 20px rgba(0,0,0,0.5); transition: max-width 0.3s; }
@@ -11,57 +11,67 @@
         h2 { color: #39FF14; margin-top: 0; margin-bottom: 20px; text-transform: uppercase; font-weight: 900; font-size: 22px; }
         .input-group { margin-bottom: 15px; text-align: left; }
         label { display: block; font-size: 11px; color: #a1a1aa; margin-bottom: 6px; text-transform: uppercase; font-weight: bold; }
-        .password-wrapper { position: relative; display: flex; align-items: center; }
         input { width: 100%; background: #18181b; border: 1px solid #27272a; border-radius: 6px; padding: 12px; color: #FFFFFF; font-size: 14px; box-sizing: border-box; outline: none; }
-        #password { padding-right: 45px; }
         input:focus { border-color: #39FF14; }
-        .eye-btn { position: absolute; right: 12px; background: none; border: none; color: #a1a1aa; cursor: pointer; font-size: 18px; padding: 0; display: flex; align-items: center; user-select: none; }
-        .eye-btn:hover { color: #39FF14; }
-        .btn-login { width: 100%; background: #39FF14; color: #000000; border: none; padding: 12px; border-radius: 6px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
-        .btn-login:hover { background: #32e011; }
+        .btn-action { width: 100%; background: #39FF14; color: #000000; border: none; padding: 12px; border-radius: 6px; font-weight: 900; text-transform: uppercase; cursor: pointer; margin-top: 10px; }
+        .btn-action:hover { background: #32e011; }
         .error-msg { color: #ff3333; font-size: 13px; margin-top: 15px; display: none; }
         .dashboard { display: none; text-align: left; }
         .dashboard.active { display: block; }
         .login-form.hidden { display: none; }
-        
-        /* СТИЛИ ДЛЯ ТАБЛИЦЫ ЗАКАЗОВ */
         .table-container { width: 100%; overflow-x: auto; margin-top: 20px; border-radius: 8px; border: 1px solid #27272a; }
         table { width: 100%; border-collapse: collapse; text-align: left; font-size: 14px; background: #18181b; min-width: 600px; }
         th, td { padding: 12px 15px; border-bottom: 1px solid #27272a; }
         th { background: #27272a; color: #39FF14; text-transform: uppercase; font-size: 11px; font-weight: bold; }
         tr:hover { background: #202024; }
         .loading { color: #a1a1aa; font-style: italic; text-align: center; padding: 20px 0; }
+        .add-order-box { background: #18181b; border: 1px solid #27272a; border-radius: 8px; padding: 15px; margin-bottom: 20px; }
+        .grid-inputs { display: grid; grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); gap: 10px; margin-bottom: 10px; }
     </style>
 </head>
 <body>
 
     <div class="admin-box" id="mainContainer">
-        <div id="loginForm" class="login-form">
-            <h2>Вход в Админку</h2>
+        <div id="loginForm">
+            <h2>Вход в GitHub Админку</h2>
             <div class="input-group">
-                <label>Логин</label>
-                <input type="text" id="username" placeholder="Введите логин">
+                <label>Имя пользователя GitHub (Логин)</label>
+                <input type="text" id="githubUser" placeholder="Например: nsmirnov-byte">
             </div>
             <div class="input-group">
-                <label>Пароль</label>
-                <div class="password-wrapper">
-                    <input type="password" id="password" placeholder="Введите пароль">
-                    <button type="button" onclick="togglePasswordVisibility()" class="eye-btn" id="eyeIcon">👁️</button>
-                </div>
+                <label>Имя репозитория</label>
+                <input type="text" id="githubRepo" value="merch">
             </div>
-            <button onclick="checkLogin()" class="btn-login">Войти</button>
-            <div id="error" class="error-msg">Неверный логин или пароль!</div>
+            <div class="input-group">
+                <label>GitHub Personal Token</label>
+                <input type="password" id="githubToken" placeholder="ghp_xxxxxxxxxxxx">
+            </div>
+            <button onclick="initAdmin()" class="btn-action">Подключиться к базе</button>
+            <div id="error" class="error-msg">Ошибка подключения! Проверьте правильность токена и логина.</div>
         </div>
 
         <div id="dashboard" class="dashboard">
-            <h2>Панель управления заказами</h2>
+            <h2>Панель заказов (Файл: orders.json)</h2>
+            
+            <div class="add-order-box">
+                <h4 style="margin: 0 0 10px 0; color: #39FF14;">Добавить новый заказ в базу</h4>
+                <div class="grid-inputs">
+                    <input type="text" id="newOrderItems" placeholder="Товар">
+                    <input type="text" id="newOrderPrice" placeholder="Цена">
+                    <input type="text" id="newOrderName" placeholder="Имя">
+                    <input type="text" id="newOrderContact" placeholder="Контакты">
+                    <input type="text" id="newOrderAddress" placeholder="Адрес">
+                </div>
+                <button onclick="addNewOrder()" class="btn-action" style="margin-top:0; padding: 8px; font-size:12px;">Сохранить заказ на GitHub</button>
+            </div>
+
             <div style="margin-bottom: 15px;">
-                <button onclick="loadOrders()" class="btn-login" style="width: auto; padding: 8px 15px; margin-right: 10px; display: inline-block; font-size: 12px; margin-top: 0;">Обновить список</button>
-                <button onclick="logout()" class="btn-login" style="width: auto; padding: 8px 15px; background: #ffffff; color: #000000; display: inline-block; font-size: 12px; margin-top: 0;">Выйти</button>
+                <button onclick="loadGitHubOrders()" class="btn-action" style="width: auto; padding: 8px 15px; margin-right: 10px; display: inline-block; font-size: 12px; margin-top: 0;">Обновить список</button>
+                <button onclick="logout()" class="btn-action" style="width: auto; padding: 8px 15px; background: #ffffff; color: #000000; display: inline-block; font-size: 12px; margin-top: 0;">Выйти</button>
             </div>
             
             <div class="table-container">
-                <div id="loadingText" class="loading">Загрузка данных из Google Таблицы...</div>
+                <div id="loadingText" class="loading">Загрузка данных из GitHub...</div>
                 <table id="ordersTable" style="display: none;">
                     <thead>
                         <tr>
@@ -73,96 +83,4 @@
                             <th>Адрес</th>
                         </tr>
                     </thead>
-                    <tbody id="tableBody"></tbody>
-                </table>
-            </div>
-        </div>
-    </div>
-
-    <script>
-        // Твоя ссылка на Google Скрипт уже встроена сюда
-        const googleScriptUrl = "https://script.google.com/macros/s/AKfycbw2zeVPD47fP0q2OW4FwvtQzbBWWB-pEj7JEjb34lXrKGwBBIKdYiCn7mum9cqrKz3MZA/exec";
-
-        function togglePasswordVisibility() {
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
-            if (passwordInput.type === 'password') {
-                passwordInput.type = 'text'; eyeIcon.innerText = '🙈';
-            } else {
-                passwordInput.type = 'password'; eyeIcon.innerText = '👁️';
-            }
-        }
-
-        function checkLogin() {
-            const userInput = document.getElementById('username').value.trim().toLowerCase();
-            const passInput = document.getElementById('password').value.trim().toUpperCase();
-            const errorDiv = document.getElementById('error');
-
-            if (btoa(userInput) === "YWRtaW4=" && btoa(passInput) === "QUxFWDIwMjQ=") {
-                document.getElementById('loginForm').classList.add('hidden');
-                document.getElementById('dashboard').classList.add('active');
-                document.getElementById('mainContainer').classList.add('wide');
-                errorDiv.style.display = 'none';
-                loadOrders(); 
-            } else {
-                errorDiv.style.display = 'block';
-            }
-        }
-
-        async function loadOrders() {
-            const loadingText = document.getElementById('loadingText');
-            const table = document.getElementById('ordersTable');
-            const tbody = document.getElementById('tableBody');
-            
-            loadingText.style.display = "block";
-            loadingText.innerText = "Загрузка данных из Google Таблицы...";
-            table.style.display = "none";
-            tbody.innerHTML = "";
-
-            try {
-                const response = await fetch(googleScriptUrl);
-                const data = await response.json();
-                
-                if (data.length <= 1) {
-                    loadingText.innerText = "Заказов пока нет.";
-                    return;
-                }
-
-                loadingText.style.display = "none";
-                table.style.display = "table";
-
-                for (let i = data.length - 1; i >= 1; i--) {
-                    let row = data[i];
-                    let tr = document.createElement('tr');
-                    let orderDate = row[0] ? new Date(row[0]).toLocaleString('ru-RU') : '—';
-
-                    tr.innerHTML = `
-                        <td style="color: #a1a1aa; font-size: 12px;">${orderDate}</td>
-                        <td style="font-weight: bold;">${row[1] || '—'}</td>
-                        <td style="color: #39FF14; font-weight: bold;">${row[2] || '—'}</td>
-                        <td>${row[3] || '—'}</td>
-                        <td style="color: #39FF14;">${row[4] || '—'}</td>
-                        <td style="font-size: 13px;">${row[5] || '—'}</td>
-                    `;
-                    tbody.appendChild(tr);
-                }
-            } catch (err) {
-                loadingText.innerText = "Ошибка загрузки данных. Проверьте настройки развертывания скрипта.";
-                console.error(err);
-            }
-        }
-
-        function logout() {
-            document.getElementById('loginForm').classList.remove('hidden');
-            document.getElementById('dashboard').classList.remove('active');
-            document.getElementById('mainContainer').classList.remove('wide');
-            document.getElementById('username').value = '';
-            document.getElementById('password').value = '';
-            const passwordInput = document.getElementById('password');
-            const eyeIcon = document.getElementById('eyeIcon');
-            passwordInput.type = 'password';
-            eyeIcon.innerText = '👁️';
-        }
-    </script>
-</body>
-</html>
+                    <tbody id
